@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "de.rasmusantons.playertracker.server.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "server": [
+    "CompassItemMixin",
+    "ItemMixin",
+    "ServerPlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

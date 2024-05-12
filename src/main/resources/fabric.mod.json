@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "playertracker",
+  "version": "${version}",
+  "name": "playertracker",
+  "description": "",
+  "authors": [
+    "Rasmus Antons"
+  ],
+  "contact": {
+    "repo": "https://github.com/RasmusAntons/playertracker"
+  },
+  "license": "MIT",
+  "icon": "assets/playertracker/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "de.rasmusantons.playertracker.client.PlayerTrackerClient"
+    ],
+    "main": [
+      "de.rasmusantons.playertracker.PlayerTracker"
+    ]
+  },
+  "mixins": [
+    "playertracker.common.mixins.json",
+    {
+      "environment": "server",
+      "config": "playertracker.server.mixins.json"
+    },
+    {
+      "environment": "client",
+      "config": "playertracker.client.mixins.json"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
