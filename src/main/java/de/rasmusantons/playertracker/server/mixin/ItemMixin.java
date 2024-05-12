@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,26 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static net.minecraft.core.component.DataComponents.LORE;
+
 @Mixin(Item.class)
 public class ItemMixin {
     @Inject(method = "use", at = @At("HEAD"))
     private void onUse(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        ItemStack item = player.getItemInHand(interactionHand);
-        if (player instanceof ServerPlayer serverPlayer && Utils.isPlayerTracker(item)) {
+        ItemStack itemStack = player.getItemInHand(interactionHand);
+        if (player instanceof ServerPlayer serverPlayer && Utils.isPlayerTracker(itemStack)) {
             ServerPlayer currentlyTracking = ((ServerPlayerExtension) serverPlayer).playertracker$getTrackedPlayer();
             List<ServerPlayer> players = new ArrayList<>(Objects.requireNonNull(level.getServer()).getPlayerList().getPlayers());
             players.remove(player);
-            Component message;
+            Component message, lore;
             if (!players.isEmpty()) {
                 int currentlyTrackingIdx = players.indexOf(currentlyTracking);
                 int nowTrackingIdx = (currentlyTrackingIdx + 1) % players.size();
                 ServerPlayer nowTracking = players.get(nowTrackingIdx);
                 ((ServerPlayerExtension) serverPlayer).playertracker$setTrackedPlayer(nowTracking);
                 String nowTrackingName = Objects.requireNonNull(nowTracking.getDisplayName()).getString();
-                message = Component.literal(String.format("now tracking %s", nowTrackingName)).withStyle(ChatFormatting.GOLD);
+                message = Component.translatable("playertracker.action.now_tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+                lore = Component.translatable("playertracker.lore.tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
             } else {
-                message = Component.literal("no player to track").withStyle(ChatFormatting.GOLD);
+                message = Component.translatable("playertracker.action.no_player").withStyle(ChatFormatting.GOLD);
+                lore = Component.translatable("playertracker.lore.not_tracking").withStyle(ChatFormatting.GOLD);
             }
+            itemStack.set(LORE, new ItemLore(List.of(lore)));
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(message));
         }
     }

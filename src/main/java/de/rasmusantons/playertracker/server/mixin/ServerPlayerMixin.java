@@ -41,7 +41,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin implements ServerPla
             if (nPlayerTrackers > 1) {
                 this.getInventory().clearOrCountMatchingItems(Utils::isPlayerTracker, nPlayerTrackers - 1, this.getInventory());
             } else if (nPlayerTrackers == 0) {
-                this.addItem(Utils.createPlayerTracker());
+                this.addItem(Utils.createPlayerTracker(this.level()));
             }
         }
     }

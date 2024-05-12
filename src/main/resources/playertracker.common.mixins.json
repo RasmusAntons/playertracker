@@ -6,7 +6,8 @@
     "SlotMixin",
     "EntityMixin",
     "PlayerMixin",
-    "MerchantOfferMixin"
+    "ItemCostMixin",
+    "ItemFrameMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,6 @@
+{
+  "playertracker.action.now_tracking": "now tracking %s",
+  "playertracker.action.no_player": "no player to track",
+  "playertracker.lore.tracking": "tracking %s",
+  "playertracker.lore.not_tracking": "not tracking any player"
+}

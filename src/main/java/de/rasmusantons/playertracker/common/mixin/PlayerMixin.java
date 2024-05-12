@@ -22,9 +22,7 @@ public abstract class PlayerMixin extends EntityMixin {
 
     @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
     private void onDrop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-        if (Utils.isPlayerTracker(itemStack)) {
+        if (Utils.isPlayerTracker(itemStack))
             cir.setReturnValue(null);
-            this.addItem(Utils.createPlayerTracker());
-        }
     }
 }
