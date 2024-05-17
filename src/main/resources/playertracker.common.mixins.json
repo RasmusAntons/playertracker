@@ -7,7 +7,8 @@
     "EntityMixin",
     "PlayerMixin",
     "ItemCostMixin",
-    "ItemFrameMixin"
+    "ItemFrameMixin",
+    "AllayMixin"
   ],
   "injectors": {
     "defaultRequire": 1
