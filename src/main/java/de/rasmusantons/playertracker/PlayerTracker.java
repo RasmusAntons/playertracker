@@ -1,5 +1,6 @@
 package de.rasmusantons.playertracker;
 
+import de.rasmusantons.playertracker.network.PlayerTrackerNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
@@ -14,6 +15,6 @@ public class PlayerTracker implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
+        PlayerTrackerNetworking.init();
     }
 }
