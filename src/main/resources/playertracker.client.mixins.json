@@ -3,7 +3,7 @@
   "package": "de.rasmusantons.playertracker.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ItemInHandRendererMixin"
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
