@@ -1,6 +1,5 @@
 package de.rasmusantons.playertracker.common.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import de.rasmusantons.playertracker.Utils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,16 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Allay.class)
 public class AllayMixin {
-    @Inject(
-            method = "mobInteract",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;",
-                    shift = At.Shift.BY, by = 2
-            ),
-            cancellable = true
-    )
-    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, @Local ItemStack itemStack) {
+    @Inject(method = "mobInteract", at = @At(value = "HEAD"), cancellable = true)
+    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        ItemStack itemStack = player.getItemInHand(hand);
         if (Utils.isPlayerTracker(itemStack))
             cir.setReturnValue(InteractionResult.PASS);
     }
