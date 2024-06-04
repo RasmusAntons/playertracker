@@ -17,6 +17,9 @@
     "client": [
       "de.rasmusantons.playertracker.client.PlayerTrackerClient"
     ],
+    "server": [
+      "de.rasmusantons.playertracker.server.PlayerTrackerServer"
+    ],
     "main": [
       "de.rasmusantons.playertracker.PlayerTracker"
     ]

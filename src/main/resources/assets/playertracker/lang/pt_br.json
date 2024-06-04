@@ -1,0 +1,10 @@
+{
+  "category.playertracker": "Playertracker",
+  "key.playertracker.gui": "Abrir GUI",
+  "playertracker.action.no_player": "nenhum jogador para rastrear",
+  "playertracker.action.now_tracking": "agora rastreando %s",
+  "playertracker.gui.click_to_track": "Clique para iniciar o rastreamento.",
+  "playertracker.gui.title": "Selecione um jogador",
+  "playertracker.lore.not_tracking": "rastreando nenhum jogador",
+  "playertracker.lore.tracking": "rastreando %s"
+}

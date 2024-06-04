@@ -1,10 +1,13 @@
 package de.rasmusantons.playertracker;
 
+import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -14,6 +17,7 @@ import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static net.minecraft.core.component.DataComponents.*;
@@ -40,5 +44,17 @@ public class Utils {
         LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(GlobalPos.of(level.dimension(), blockPos)), false);
         newCompass.set(LODESTONE_TRACKER, lodestoneTracker);
         return newCompass;
+    }
+
+    public static void setTrackedPlayer(ServerPlayer player, ServerPlayer trackedPlayer) {
+        ((ServerPlayerExtension) player).playertracker$setTrackedPlayer(trackedPlayer);
+        String nowTrackingName = Objects.requireNonNull(trackedPlayer.getDisplayName()).getString();
+        Component message = Component.translatable("playertracker.action.now_tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+        player.connection.send(new ClientboundSetActionBarTextPacket(message));
+        player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker -> {
+            Component lore = Component.translatable("playertracker.lore.tracking", nowTrackingName)
+                    .withStyle(ChatFormatting.GOLD);
+            playerTracker.set(LORE, new ItemLore(List.of(lore)));
+        });
     }
 }
