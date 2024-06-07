@@ -48,12 +48,17 @@ public class Utils {
 
     public static void setTrackedPlayer(ServerPlayer player, ServerPlayer trackedPlayer) {
         ((ServerPlayerExtension) player).playertracker$setTrackedPlayer(trackedPlayer);
-        String nowTrackingName = Objects.requireNonNull(trackedPlayer.getDisplayName()).getString();
-        Component message = Component.translatable("playertracker.action.now_tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+        Component message, lore;
+        if (trackedPlayer != null) {
+            String nowTrackingName = Objects.requireNonNull(trackedPlayer.getDisplayName()).getString();
+            message = Component.translatable("playertracker.action.now_tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+            lore = Component.translatable("playertracker.lore.tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+        } else {
+            message = Component.translatable("playertracker.action.no_longer_tracking");
+            lore = Component.translatable("playertracker.lore.not_tracking");
+        }
         player.connection.send(new ClientboundSetActionBarTextPacket(message));
         player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker -> {
-            Component lore = Component.translatable("playertracker.lore.tracking", nowTrackingName)
-                    .withStyle(ChatFormatting.GOLD);
             playerTracker.set(LORE, new ItemLore(List.of(lore)));
         });
     }
