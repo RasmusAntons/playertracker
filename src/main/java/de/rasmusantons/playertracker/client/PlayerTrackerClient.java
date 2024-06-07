@@ -1,5 +1,6 @@
 package de.rasmusantons.playertracker.client;
 
+import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.network.c2s.TrackPlayerPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -26,8 +27,10 @@ public class PlayerTrackerClient implements ClientModInitializer {
                 var connection = minecraft.getConnection();
                 if (connection == null || connection.getOnlinePlayers().size() <= 1) {
                     minecraft.gui.setOverlayMessage(
-                            Component.translatable("playertracker.action.no_player").withStyle(ChatFormatting.GOLD
-                            ), false);
+                            Utils.addFallback(Component.translatable("playertracker.action.no_player"))
+                                    .withStyle(ChatFormatting.GOLD),
+                            false
+                    );
                     return;
                 }
                 client.setScreen(new PlayerTrackerGUI(

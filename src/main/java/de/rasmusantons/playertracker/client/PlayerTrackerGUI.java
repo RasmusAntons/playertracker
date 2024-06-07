@@ -1,5 +1,6 @@
 package de.rasmusantons.playertracker.client;
 
+import de.rasmusantons.playertracker.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,7 +31,7 @@ public class PlayerTrackerGUI extends Screen {
     private final Consumer<PlayerInfo> onSelect;
 
     protected PlayerTrackerGUI(Consumer<PlayerInfo> onSelect) {
-        super(Component.translatable("playertracker.gui.title"));
+        super(Utils.addFallback(Component.translatable("playertracker.gui.title")));
         this.onSelect = onSelect;
     }
 
@@ -54,7 +55,8 @@ public class PlayerTrackerGUI extends Screen {
     protected void renderContainer(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.blitSprite(new ResourceLocation("playertracker", "container"),
                 0, 0, 256, 256);
-        graphics.drawString(this.minecraft.font, Component.translatable("playertracker.gui.title"),
+        graphics.drawString(this.minecraft.font,
+                Utils.addFallback(Component.translatable("playertracker.gui.title")),
                 TITLE_LEFT, TITLE_TOP, 0x404040, false);
         List<PlayerInfo> onlinePlayers = this.minecraft.getConnection().getOnlinePlayers().stream().filter(
                 p -> !p.getProfile().getId().equals(this.minecraft.player.getUUID())
@@ -92,7 +94,8 @@ public class PlayerTrackerGUI extends Screen {
     protected List<Component> createTooltip(PlayerInfo playerInfo) {
         return List.of(
                 Component.literal(playerInfo.getProfile().getName()),
-                Component.translatable("playertracker.gui.click_to_track").withStyle(ChatFormatting.GRAY)
+                Utils.addFallback(Component.translatable("playertracker.gui.click_to_track"))
+                        .withStyle(ChatFormatting.GRAY)
         );
     }
 
