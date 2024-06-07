@@ -46,20 +46,29 @@ public class Utils {
         return newCompass;
     }
 
-    public static void setTrackedPlayer(ServerPlayer player, ServerPlayer trackedPlayer) {
-        ((ServerPlayerExtension) player).playertracker$setTrackedPlayer(trackedPlayer);
-        Component message, lore;
+    public static void showTrackingActionBarText(ServerPlayer player, ServerPlayer trackedPlayer) {
+        Component message;
         if (trackedPlayer != null) {
             String nowTrackingName = Objects.requireNonNull(trackedPlayer.getDisplayName()).getString();
             message = Component.translatable("playertracker.action.now_tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
-            lore = Component.translatable("playertracker.lore.tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
         } else {
-            message = Component.translatable("playertracker.action.no_longer_tracking");
-            lore = Component.translatable("playertracker.lore.not_tracking");
+            message = Component.translatable("playertracker.action.not_tracking").withStyle(ChatFormatting.GOLD);
         }
         player.connection.send(new ClientboundSetActionBarTextPacket(message));
-        player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker -> {
-            playerTracker.set(LORE, new ItemLore(List.of(lore)));
-        });
+    }
+
+    public static void setTrackedPlayer(ServerPlayer player, ServerPlayer trackedPlayer) {
+        ((ServerPlayerExtension) player).playertracker$setTrackedPlayer(trackedPlayer);
+        Component lore;
+        if (trackedPlayer != null) {
+            String nowTrackingName = Objects.requireNonNull(trackedPlayer.getDisplayName()).getString();
+            lore = Component.translatable("playertracker.lore.tracking", nowTrackingName).withStyle(ChatFormatting.GOLD);
+        } else {
+            lore = Component.translatable("playertracker.lore.not_tracking").withStyle(ChatFormatting.GOLD);
+        }
+        showTrackingActionBarText(player, trackedPlayer);
+        player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker ->
+                playerTracker.set(LORE, new ItemLore(List.of(lore)))
+        );
     }
 }
