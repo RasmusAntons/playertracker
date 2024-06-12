@@ -8,8 +8,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import static de.rasmusantons.playertracker.PlayerTracker.id;
+
 public record TrackPlayerPacket(GameProfile player) implements CustomPacketPayload {
-    public static final ResourceLocation IDENTIFIER = new ResourceLocation("playertracker", "track_player");
+    public static final ResourceLocation IDENTIFIER = id("track_player");
     public static final Type<TrackPlayerPacket> TYPE = new Type<>(IDENTIFIER);
     public static final StreamCodec<ByteBuf, TrackPlayerPacket> CODEC = ByteBufCodecs.GAME_PROFILE.map(
             TrackPlayerPacket::new,

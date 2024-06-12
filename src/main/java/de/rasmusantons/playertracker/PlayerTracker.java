@@ -4,6 +4,7 @@ import de.rasmusantons.playertracker.network.PlayerTrackerNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.GameRules;
 
 public class PlayerTracker implements ModInitializer {
@@ -12,6 +13,12 @@ public class PlayerTracker implements ModInitializer {
                     GameRules.Category.PLAYER,
                     GameRuleFactory.createBooleanRule(false)
             );
+
+    public static String MOD_ID = "playertracker";
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
 
     @Override
     public void onInitialize() {
