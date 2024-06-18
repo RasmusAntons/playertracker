@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static de.rasmusantons.playertracker.PlayerTracker.id;
+
 public class PlayerTrackerGUI extends Screen {
     final static int CONTAINER_WIDTH = 176;
     final static int CONTAINER_HEIGHT = 96;
@@ -53,7 +55,7 @@ public class PlayerTrackerGUI extends Screen {
     }
 
     protected void renderContainer(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.blitSprite(new ResourceLocation("playertracker", "container"),
+        graphics.blitSprite(id("container"),
                 0, 0, 256, 256);
         graphics.drawString(this.minecraft.font,
                 Utils.addFallback(Component.translatable("playertracker.gui.title")),
