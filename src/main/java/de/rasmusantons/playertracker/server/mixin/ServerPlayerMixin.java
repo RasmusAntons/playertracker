@@ -3,32 +3,37 @@ package de.rasmusantons.playertracker.server.mixin;
 import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.common.mixin.PlayerMixin;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static de.rasmusantons.playertracker.PlayerTracker.GIVE_PLAYER_TRACKER;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends PlayerMixin implements ServerPlayerExtension {
+    @Shadow @Final public MinecraftServer server;
     @Unique
-    public ServerPlayer playertracker$trackedPlayer = null;
+    public UUID playertracker$trackedPlayer = null;
 
     @Unique
     public ServerPlayer playertracker$getTrackedPlayer() {
-        return this.playertracker$trackedPlayer;
+        return this.server.getPlayerList().getPlayer(this.playertracker$trackedPlayer);
     }
 
     @Unique
     public void playertracker$setTrackedPlayer(ServerPlayer trackedPlayer) {
-        this.playertracker$trackedPlayer = trackedPlayer;
+        this.playertracker$trackedPlayer = trackedPlayer.getUUID();
     }
 
     @Inject(method = "doTick", at = @At("TAIL"))
