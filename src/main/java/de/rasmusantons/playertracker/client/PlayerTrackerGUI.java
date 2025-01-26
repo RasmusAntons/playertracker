@@ -8,7 +8,6 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -55,8 +54,7 @@ public class PlayerTrackerGUI extends Screen {
     }
 
     protected void renderContainer(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.blitSprite(id("container"),
-                0, 0, 256, 256);
+        graphics.blitSprite(RenderType::guiTextured, id("container"), 0, 0, 256, 256);
         graphics.drawString(this.minecraft.font,
                 Utils.addFallback(Component.translatable("playertracker.gui.title")),
                 TITLE_LEFT, TITLE_TOP, 0x404040, false);

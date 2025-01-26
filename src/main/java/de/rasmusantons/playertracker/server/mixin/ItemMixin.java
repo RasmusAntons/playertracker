@@ -4,7 +4,7 @@ import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ import java.util.Objects;
 @Mixin(Item.class)
 public class ItemMixin {
     @Inject(method = "use", at = @At("HEAD"))
-    private void onUse(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+    private void onUse(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (player instanceof ServerPlayer serverPlayer && Utils.isPlayerTracker(itemStack)) {
             ServerPlayer currentlyTracking = ((ServerPlayerExtension) serverPlayer).playertracker$getTrackedPlayer();
