@@ -3,14 +3,15 @@
   "package": "de.rasmusantons.playertracker.common.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "SlotMixin",
-    "ShulkerBoxSlotMixin",
+    "AllayMixin",
+    "BundleContentsMixin",
+    "CompassItemMixin",
     "EntityMixin",
-    "PlayerMixin",
     "ItemCostMixin",
     "ItemFrameMixin",
-    "AllayMixin",
-    "CompassItemMixin"
+    "PlayerMixin",
+    "ShulkerBoxSlotMixin",
+    "SlotMixin"
   ],
   "injectors": {
     "defaultRequire": 1
