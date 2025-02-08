@@ -1,11 +1,11 @@
 {
   "category.playertracker": "Playertracker",
   "key.playertracker.gui": "Open GUI",
-  "playertracker.action.no_player": "no player to track",
-  "playertracker.action.not_tracking": "not tracking any player",
-  "playertracker.action.now_tracking": "now tracking %s",
+  "playertracker.action.no_player": "No Player to Track",
+  "playertracker.action.not_tracking": "Not Tracking Any Player",
+  "playertracker.action.now_tracking": "Now Tracking %s",
   "playertracker.gui.click_to_track": "Click to start tracking.",
   "playertracker.gui.title": "Select Player",
-  "playertracker.lore.not_tracking": "not tracking any player",
-  "playertracker.lore.tracking": "tracking %s"
+  "playertracker.lore.not_tracking": "Not Tracking Any Player",
+  "playertracker.lore.tracking": "Tracking %s"
 }
