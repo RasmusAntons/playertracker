@@ -2,6 +2,8 @@ package de.rasmusantons.playertracker.common.mixin;
 
 import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +27,7 @@ import static net.minecraft.core.component.DataComponents.LODESTONE_TRACKER;
 @Mixin(CompassItem.class)
 public class CompassItemMixin {
     @Inject(method = "inventoryTick", at = @At("HEAD"))
-    private void onInventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl, CallbackInfo ci) {
+    private void onInventoryTick(ItemStack itemStack, Level level, Entity entity, int slotId, boolean isSelected, CallbackInfo ci) {
         if (entity instanceof ServerPlayer serverPlayer) {
             if (!Utils.isPlayerTracker(itemStack))
                 return;
@@ -41,7 +43,14 @@ public class CompassItemMixin {
             if (targetPos == null)
                 targetPos = Utils.getDefaultTarget(level);
             LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(targetPos), false);
-            itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
+            LodestoneTracker previousTracker = itemStack.get(LODESTONE_TRACKER);
+            GlobalPos previousTarget = previousTracker.target().orElse(null);
+            if (previousTarget == null || !previousTarget.equals(targetPos)) {
+                itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
+                if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                    serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(slotId));
+                }
+            }
         }
     }
 
