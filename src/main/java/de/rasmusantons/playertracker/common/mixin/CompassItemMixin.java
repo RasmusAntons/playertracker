@@ -4,7 +4,6 @@ import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -39,14 +38,8 @@ public class CompassItemMixin {
                 BlockPos blockPos = nowTracking.getOnPos();
                 targetPos = GlobalPos.of(nowTracking.level().dimension(), blockPos);
             }
-            if (targetPos == null) {
-                for (var otherLevel : serverPlayer.getServer().levelKeys()) {
-                    if (!otherLevel.equals(level.dimension())) {
-                        targetPos = GlobalPos.of(otherLevel, new BlockPos(0, 0, 0));
-                        break;
-                    }
-                }
-            }
+            if (targetPos == null)
+                targetPos = Utils.getDefaultTarget(level);
             LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(targetPos), false);
             itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
         }

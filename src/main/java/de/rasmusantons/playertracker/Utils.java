@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.ItemStack;
@@ -45,9 +46,8 @@ public class Utils {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("playertracker", true);
         newCompass.set(CUSTOM_DATA, CustomData.of(tag));
-        BlockPos blockPos = BlockPos.ZERO;
         LodestoneTracker lodestoneTracker = new LodestoneTracker(
-                Optional.of(GlobalPos.of(level.dimension(), blockPos)),
+                Optional.of(getDefaultTarget(level)),
                 false
         );
         newCompass.set(LODESTONE_TRACKER, lodestoneTracker);
@@ -82,6 +82,17 @@ public class Utils {
         player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker ->
                 playerTracker.set(LORE, new ItemLore(List.of(lore)))
         );
+    }
+
+    public static GlobalPos getDefaultTarget(Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            for (var otherLevel : serverLevel.getServer().levelKeys()) {
+                if (!otherLevel.equals(level.dimension())) {
+                    return GlobalPos.of(otherLevel, new BlockPos(0, 0, 0));
+                }
+            }
+        }
+        return GlobalPos.of(level.dimension(), new BlockPos(0, 0, 0));
     }
 
     public static MutableComponent addFallback(MutableComponent component) {
