@@ -35,18 +35,18 @@ public class CompassItemMixin {
             if (nowTracking == null || nowTracking.hasDisconnected()) {
                 if (nowTracking != null)
                     Utils.setTrackedPlayer(serverPlayer, null);
+            } else {
+                BlockPos blockPos = nowTracking.getOnPos();
+                targetPos = GlobalPos.of(nowTracking.level().dimension(), blockPos);
+            }
+            if (targetPos == null) {
                 for (var otherLevel : serverPlayer.getServer().levelKeys()) {
                     if (!otherLevel.equals(level.dimension())) {
                         targetPos = GlobalPos.of(otherLevel, new BlockPos(0, 0, 0));
                         break;
                     }
                 }
-            } else {
-                BlockPos blockPos = nowTracking.getOnPos();
-                targetPos = GlobalPos.of(nowTracking.level().dimension(), blockPos);
             }
-            if (targetPos == null)
-                targetPos = GlobalPos.of(serverPlayer.level().dimension(), serverPlayer.level().getSharedSpawnPos());
             LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(targetPos), false);
             itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
         }
