@@ -6,14 +6,15 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,7 +28,7 @@ import static net.minecraft.core.component.DataComponents.LODESTONE_TRACKER;
 @Mixin(CompassItem.class)
 public class CompassItemMixin {
     @Inject(method = "inventoryTick", at = @At("HEAD"))
-    private void onInventoryTick(ItemStack itemStack, Level level, Entity entity, int slotId, boolean isSelected, CallbackInfo ci) {
+    private void onInventoryTick(ItemStack itemStack, ServerLevel serverLevel, Entity entity, EquipmentSlot equipmentSlot, CallbackInfo ci) {
         if (entity instanceof ServerPlayer serverPlayer) {
             if (!Utils.isPlayerTracker(itemStack))
                 return;
@@ -41,14 +42,14 @@ public class CompassItemMixin {
                 targetPos = GlobalPos.of(nowTracking.level().dimension(), blockPos);
             }
             if (targetPos == null)
-                targetPos = Utils.getDefaultTarget(level);
+                targetPos = Utils.getDefaultTarget(serverLevel);
             LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(targetPos), false);
             LodestoneTracker previousTracker = itemStack.get(LODESTONE_TRACKER);
             GlobalPos previousTarget = previousTracker.target().orElse(null);
             if (previousTarget == null || !previousTarget.equals(targetPos)) {
                 itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
                 if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                    serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(slotId));
+                    serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(equipmentSlot.getId()));
                 }
             }
         }

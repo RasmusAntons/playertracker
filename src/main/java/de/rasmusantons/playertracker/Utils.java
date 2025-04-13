@@ -18,7 +18,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.LodestoneTracker;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,10 +32,10 @@ public class Utils {
         CustomData customData = itemStack.get(CUSTOM_DATA);
         if (customData == null)
             return false;
-        return customData.copyTag().getBoolean("playertracker");
+        return customData.copyTag().getBooleanOr("playertracker", false);
     }
 
-    public static ItemStack createPlayerTracker(Level level) {
+    public static ItemStack createPlayerTracker(ServerLevel serverLevel) {
         ItemStack newCompass = new ItemStack(Items.COMPASS);
         Component itemName = Component.literal("Player Tracker");
         newCompass.set(ITEM_NAME, itemName);
@@ -47,7 +46,7 @@ public class Utils {
         tag.putBoolean("playertracker", true);
         newCompass.set(CUSTOM_DATA, CustomData.of(tag));
         LodestoneTracker lodestoneTracker = new LodestoneTracker(
-                Optional.of(getDefaultTarget(level)),
+                Optional.of(getDefaultTarget(serverLevel)),
                 false
         );
         newCompass.set(LODESTONE_TRACKER, lodestoneTracker);
@@ -79,20 +78,18 @@ public class Utils {
                     .withStyle(ChatFormatting.GOLD);
         }
         showTrackingActionBarText(player, trackedPlayer);
-        player.getInventory().items.stream().filter(Utils::isPlayerTracker).forEach(playerTracker ->
+        player.getInventory().getNonEquipmentItems().stream().filter(Utils::isPlayerTracker).forEach(playerTracker ->
                 playerTracker.set(LORE, new ItemLore(List.of(lore)))
         );
     }
 
-    public static GlobalPos getDefaultTarget(Level level) {
-        if (level instanceof ServerLevel serverLevel) {
-            for (var otherLevel : serverLevel.getServer().levelKeys()) {
-                if (!otherLevel.equals(level.dimension())) {
-                    return GlobalPos.of(otherLevel, new BlockPos(0, 0, 0));
-                }
+    public static GlobalPos getDefaultTarget(ServerLevel serverLevel) {
+        for (var otherLevel : serverLevel.getServer().levelKeys()) {
+            if (!otherLevel.equals(serverLevel.dimension())) {
+                return GlobalPos.of(otherLevel, new BlockPos(0, 0, 0));
             }
         }
-        return GlobalPos.of(level.dimension(), new BlockPos(0, 0, 0));
+        return GlobalPos.of(serverLevel.dimension(), new BlockPos(0, 0, 0));
     }
 
     public static MutableComponent addFallback(MutableComponent component) {

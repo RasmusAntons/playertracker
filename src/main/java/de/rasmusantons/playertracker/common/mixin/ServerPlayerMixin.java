@@ -52,13 +52,13 @@ public abstract class ServerPlayerMixin extends PlayerMixin implements ServerPla
     private void onTick(CallbackInfo ci) {
         if (this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().getBoolean(GIVE_PLAYER_TRACKER)) {
             int nPlayerTrackers = Stream.concat(
-                    this.getInventory().items.stream(),
+                    this.getInventory().getNonEquipmentItems().stream(),
                     Stream.of(this.getItemBySlot(EquipmentSlot.OFFHAND), this.containerMenu.getCarried())
             ).filter(Utils::isPlayerTracker).mapToInt(ItemStack::getCount).sum();
             if (nPlayerTrackers > 1) {
                 this.getInventory().clearOrCountMatchingItems(Utils::isPlayerTracker, nPlayerTrackers - 1, this.getInventory());
             } else if (nPlayerTrackers == 0) {
-                this.addItem(Utils.createPlayerTracker(this.level()));
+                this.addItem(Utils.createPlayerTracker(serverLevel));
             }
         }
     }
