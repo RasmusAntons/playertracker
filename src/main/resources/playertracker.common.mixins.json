@@ -11,7 +11,10 @@
     "ItemFrameMixin",
     "PlayerMixin",
     "ShulkerBoxSlotMixin",
-    "SlotMixin"
+    "SlotMixin",
+    "ItemMixin",
+    "ServerPlayerMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

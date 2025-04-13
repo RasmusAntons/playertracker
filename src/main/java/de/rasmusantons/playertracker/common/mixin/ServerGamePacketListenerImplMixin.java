@@ -1,4 +1,4 @@
-package de.rasmusantons.playertracker.server.mixin;
+package de.rasmusantons.playertracker.common.mixin;
 
 import de.rasmusantons.playertracker.Utils;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;

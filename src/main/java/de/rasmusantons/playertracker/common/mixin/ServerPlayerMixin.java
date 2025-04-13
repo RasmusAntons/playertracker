@@ -1,7 +1,6 @@
-package de.rasmusantons.playertracker.server.mixin;
+package de.rasmusantons.playertracker.common.mixin;
 
 import de.rasmusantons.playertracker.Utils;
-import de.rasmusantons.playertracker.common.mixin.PlayerMixin;
 import de.rasmusantons.playertracker.server.extension.ServerPlayerExtension;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;

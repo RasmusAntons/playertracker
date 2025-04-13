@@ -27,10 +27,6 @@
   "mixins": [
     "playertracker.common.mixins.json",
     {
-      "environment": "server",
-      "config": "playertracker.server.mixins.json"
-    },
-    {
       "environment": "client",
       "config": "playertracker.client.mixins.json"
     }
