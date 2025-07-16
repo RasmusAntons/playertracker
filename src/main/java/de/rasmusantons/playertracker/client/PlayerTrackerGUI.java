@@ -4,16 +4,19 @@ import de.rasmusantons.playertracker.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.rasmusantons.playertracker.PlayerTracker.id;
@@ -28,7 +31,7 @@ public class PlayerTrackerGUI extends Screen {
     final static int SLOTS_SIZE = 18;
 
     private PlayerInfo hoveredPlayer = null;
-    private List<Component> tooltip = null;
+    private List<ClientTooltipComponent> tooltip = null;
     private final Consumer<PlayerInfo> onSelect;
 
     protected PlayerTrackerGUI(Consumer<PlayerInfo> onSelect) {
@@ -43,18 +46,18 @@ public class PlayerTrackerGUI extends Screen {
 
         int x = (int) ((this.width / scale - CONTAINER_WIDTH) / 2);
         int y = (int) ((this.height / scale - CONTAINER_HEIGHT) / 2);
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 1);
-        graphics.pose().translate(x, y, 0);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale, scale);
+        graphics.pose().translate(x, y);
         this.renderContainer(graphics, (int) (mouseX / scale - x), (int) (mouseY / scale - y));
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
         if (this.tooltip != null) {
-            graphics.renderTooltip(this.minecraft.font, tooltip, Optional.empty(), mouseX, mouseY);
+            graphics.renderTooltip(this.minecraft.font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 
     protected void renderContainer(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.blitSprite(RenderType::guiTextured, id("container"), 0, 0, 256, 256);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, id("container"), 0, 0, 256, 256);
         graphics.drawString(this.minecraft.font,
                 Utils.addFallback(Component.translatable("playertracker.gui.title")),
                 TITLE_LEFT, TITLE_TOP, 0x404040, false);
@@ -64,20 +67,20 @@ public class PlayerTrackerGUI extends Screen {
         boolean hoveringAny = false;
         for (int i = 0; i < onlinePlayers.size(); i++) {
             PlayerInfo playerInfo = onlinePlayers.get(i);
-            graphics.pose().pushPose();
+            graphics.pose().pushMatrix();
             int row = i / 9;
             int col = i % 9;
-            graphics.pose().translate(SLOTS_LEFT + SLOTS_SIZE * col, SLOTS_TOP + SLOTS_SIZE * row, 10);
+            graphics.pose().translate(SLOTS_LEFT + SLOTS_SIZE * col, SLOTS_TOP + SLOTS_SIZE * row);
             this.renderPlayer(graphics, playerInfo);
             if (isHovering(row, col, mouseX, mouseY)) {
                 hoveringAny = true;
-                graphics.fill(RenderType.guiOverlay(), 0, 0, 16, 16, 15, 0x80ffffff);
+                graphics.fill(RenderPipelines.GUI, 0, 0, 16, 16, 0x80ffffff);
                 if (!playerInfo.equals(this.hoveredPlayer)) {
                     this.hoveredPlayer = playerInfo;
                     this.tooltip = createTooltip(playerInfo);
                 }
             }
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
         }
         if (!hoveringAny) {
             this.hoveredPlayer = null;
@@ -91,11 +94,10 @@ public class PlayerTrackerGUI extends Screen {
         graphics.renderFakeItem(playerHead, 0, 0);
     }
 
-    protected List<Component> createTooltip(PlayerInfo playerInfo) {
+    protected List<ClientTooltipComponent> createTooltip(PlayerInfo playerInfo) {
         return List.of(
-                Component.literal(playerInfo.getProfile().getName()),
-                Utils.addFallback(Component.translatable("playertracker.gui.click_to_track"))
-                        .withStyle(ChatFormatting.GRAY)
+                ClientTooltipComponent.create(FormattedCharSequence.forward(playerInfo.getProfile().getName(), Style.EMPTY)),
+                ClientTooltipComponent.create(Component.translatable("playertracker.gui.click_to_track").withStyle(ChatFormatting.GRAY).getVisualOrderText())
         );
     }
 
