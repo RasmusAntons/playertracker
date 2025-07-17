@@ -8,7 +8,9 @@
     "Rasmus Antons"
   ],
   "contact": {
-    "repo": "https://github.com/RasmusAntons/playertracker"
+    "sources": "https://github.com/RasmusAntons/playertracker",
+    "homepage": "https://modrinth.com/mod/playertracker",
+    "issues": "https://github.com/RasmusAntons/playertracker/issues"
   },
   "license": "MIT",
   "icon": "assets/playertracker/icon.png",
@@ -34,6 +36,6 @@
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric": ">=0.100.1",
-    "minecraft": ">=1.21- <1.22"
+    "minecraft": ">=1.21.7- <1.22"
   }
 }
