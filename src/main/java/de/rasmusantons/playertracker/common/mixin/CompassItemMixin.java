@@ -28,8 +28,8 @@ import static net.minecraft.core.component.DataComponents.LODESTONE_TRACKER;
 @Mixin(CompassItem.class)
 public class CompassItemMixin {
     @Inject(method = "inventoryTick", at = @At("HEAD"))
-    private void onInventoryTick(ItemStack itemStack, ServerLevel serverLevel, Entity entity, EquipmentSlot equipmentSlot, CallbackInfo ci) {
-        if (entity instanceof ServerPlayer serverPlayer) {
+    private void onInventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, EquipmentSlot slot, CallbackInfo ci) {
+        if (owner instanceof ServerPlayer serverPlayer) {
             if (!Utils.isPlayerTracker(itemStack))
                 return;
             GlobalPos targetPos = null;
@@ -42,14 +42,14 @@ public class CompassItemMixin {
                 targetPos = GlobalPos.of(nowTracking.level().dimension(), blockPos);
             }
             if (targetPos == null)
-                targetPos = Utils.getDefaultTarget(serverLevel);
+                targetPos = Utils.getDefaultTarget(level);
             LodestoneTracker lodestoneTracker = new LodestoneTracker(Optional.of(targetPos), false);
             LodestoneTracker previousTracker = itemStack.get(LODESTONE_TRACKER);
             GlobalPos previousTarget = previousTracker.target().orElse(null);
             if (previousTarget == null || !previousTarget.equals(targetPos)) {
                 itemStack.set(LODESTONE_TRACKER, lodestoneTracker);
                 if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                    serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(equipmentSlot.getId()));
+                    serverPlayer.connection.send(serverPlayer.getInventory().createInventoryUpdatePacket(slot.getId()));
                 }
             }
         }

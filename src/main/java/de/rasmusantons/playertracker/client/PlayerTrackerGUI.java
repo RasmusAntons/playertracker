@@ -2,10 +2,11 @@ package de.rasmusantons.playertracker.client;
 
 import de.rasmusantons.playertracker.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
@@ -40,8 +41,8 @@ public class PlayerTrackerGUI extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         float scale = 1f;
 
         int x = (int) ((this.width / scale - CONTAINER_WIDTH) / 2);
@@ -52,17 +53,17 @@ public class PlayerTrackerGUI extends Screen {
         this.renderContainer(graphics, (int) (mouseX / scale - x), (int) (mouseY / scale - y));
         graphics.pose().popMatrix();
         if (this.tooltip != null) {
-            graphics.renderTooltip(this.minecraft.font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            graphics.tooltip(this.minecraft.font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 
-    protected void renderContainer(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContainer(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, id("container"), 0, 0, 256, 256);
-        graphics.drawString(this.minecraft.font,
+        graphics.text(this.minecraft.font,
                 Utils.addFallback(Component.translatable("playertracker.gui.title")),
                 TITLE_LEFT, TITLE_TOP, 0x404040, false);
         List<PlayerInfo> onlinePlayers = this.minecraft.getConnection().getOnlinePlayers().stream().filter(
-                p -> !p.getProfile().getId().equals(this.minecraft.player.getUUID())
+                p -> !p.getProfile().id().equals(this.minecraft.player.getUUID())
         ).toList();
         boolean hoveringAny = false;
         for (int i = 0; i < onlinePlayers.size(); i++) {
@@ -88,15 +89,15 @@ public class PlayerTrackerGUI extends Screen {
         }
     }
 
-    protected void renderPlayer(GuiGraphics graphics, PlayerInfo playerInfo) {
+    protected void renderPlayer(GuiGraphicsExtractor graphics, PlayerInfo playerInfo) {
         ItemStack playerHead = new ItemStack(Items.PLAYER_HEAD);
-        playerHead.set(DataComponents.PROFILE, new ResolvableProfile(playerInfo.getProfile()));
-        graphics.renderFakeItem(playerHead, 0, 0);
+        playerHead.set(DataComponents.PROFILE, ResolvableProfile.createResolved(playerInfo.getProfile()));
+        graphics.fakeItem(playerHead, 0, 0);
     }
 
     protected List<ClientTooltipComponent> createTooltip(PlayerInfo playerInfo) {
         return List.of(
-                ClientTooltipComponent.create(FormattedCharSequence.forward(playerInfo.getProfile().getName(), Style.EMPTY)),
+                ClientTooltipComponent.create(FormattedCharSequence.forward(playerInfo.getProfile().name(), Style.EMPTY)),
                 ClientTooltipComponent.create(Component.translatable("playertracker.gui.click_to_track").withStyle(ChatFormatting.GRAY).getVisualOrderText())
         );
     }
@@ -109,7 +110,7 @@ public class PlayerTrackerGUI extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(final MouseButtonEvent event, final boolean doubleClick) {
         if (this.hoveredPlayer != null) {
             this.onClose();
             this.onSelect.accept(this.hoveredPlayer);

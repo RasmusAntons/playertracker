@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BundleContents.class)
 public class BundleContentsMixin {
     @Inject(method = "canItemBeInBundle", at = @At(value = "RETURN"), cancellable = true)
-    private static void canItemBeInBundle(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValue() && Utils.isPlayerTracker(stack)) {
+    private static void canItemBeInBundle(ItemStack itemToAdd, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValue() && Utils.isPlayerTracker(itemToAdd)) {
             cir.setReturnValue(false);
         }
     }

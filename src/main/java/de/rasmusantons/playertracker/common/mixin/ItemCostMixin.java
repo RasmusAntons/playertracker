@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemCost.class)
 public class ItemCostMixin {
     @Inject(method = "test", at = @At("HEAD"), cancellable = true)
-    private void test(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (Utils.isPlayerTracker(stack))
+    private void test(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
+        if (Utils.isPlayerTracker(itemStack))
             cir.setReturnValue(false);
     }
 }

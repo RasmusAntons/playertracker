@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntityMixin {
     @Shadow public abstract Inventory getInventory();
-    @Shadow public abstract boolean addItem(ItemStack stack);
+    @Shadow public abstract boolean addItem(ItemStack itemStack);
     @Shadow public AbstractContainerMenu containerMenu;
 }

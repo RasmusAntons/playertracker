@@ -21,8 +21,8 @@ import java.util.Objects;
 @Mixin(Item.class)
 public class ItemMixin {
     @Inject(method = "use", at = @At("HEAD"))
-    private void onUse(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
-        ItemStack itemStack = player.getItemInHand(interactionHand);
+    private void onUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        ItemStack itemStack = player.getItemInHand(hand);
         if (player instanceof ServerPlayer serverPlayer && Utils.isPlayerTracker(itemStack)) {
             ServerPlayer currentlyTracking = ((ServerPlayerExtension) serverPlayer).playertracker$getTrackedPlayer();
             List<ServerPlayer> players = new ArrayList<>(Objects.requireNonNull(level.getServer()).getPlayerList().getPlayers());

@@ -24,7 +24,8 @@ import static de.rasmusantons.playertracker.PlayerTracker.GIVE_PLAYER_TRACKER;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends PlayerMixin implements ServerPlayerExtension {
-    @Shadow @Final public MinecraftServer server;
+    @Shadow @Final
+    private MinecraftServer server;
     @Unique
     public UUID playertracker$trackedPlayer = null;
 
@@ -43,14 +44,14 @@ public abstract class ServerPlayerMixin extends PlayerMixin implements ServerPla
     }
 
     @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
-    private void onDrop(ItemStack droppedItem, boolean dropAround, boolean includeThrowerName, CallbackInfoReturnable<ItemEntity> cir) {
-        if (Utils.isPlayerTracker(droppedItem))
+    private void onDrop(ItemStack itemStack, boolean randomly, boolean thrownFromHand, CallbackInfoReturnable<ItemEntity> cir) {
+        if (Utils.isPlayerTracker(itemStack))
             cir.setReturnValue(null);
     }
 
     @Inject(method = "doTick", at = @At("TAIL"))
     private void onTick(CallbackInfo ci) {
-        if (this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().getBoolean(GIVE_PLAYER_TRACKER)) {
+        if (this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GIVE_PLAYER_TRACKER)) {
             int nPlayerTrackers = Stream.concat(
                     this.getInventory().getNonEquipmentItems().stream(),
                     Stream.of(this.getItemBySlot(EquipmentSlot.OFFHAND), this.containerMenu.getCarried())
