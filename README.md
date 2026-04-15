@@ -16,5 +16,5 @@ The player tracker cannot be dropped, traded or put into any non-player inventor
 The mod should be installed on server and client. \
 It technically works server side only, but the client side removes the update animation whenever the compass target changes.
 
-To make sure every player has a player tracker at all times, enable the game rule `givePlayerTracker`. \
+To make sure every player has a player tracker at all times, enable the game rule `playertracker:give_player_tracker`. \
 Otherwise, a player tracker can be given with `/give @p minecraft:compass[minecraft:custom_data={playertracker:1b}]`, in this case they will be deleted if dropped by the player.
