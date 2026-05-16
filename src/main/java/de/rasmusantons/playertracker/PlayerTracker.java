@@ -28,7 +28,6 @@ public class PlayerTracker implements ModInitializer {
     public void onInitialize() {
         PlayerTrackerNetworking.init();
         ServerPlayNetworking.registerGlobalReceiver(TrackPlayerPacket.TYPE, (payload, context) -> {
-            System.out.println("received track player packet");
             ServerPlayer targetPlayer = context.server().getPlayerList().getPlayer(payload.getPlayer().id());
             if (targetPlayer == null)
                 return;

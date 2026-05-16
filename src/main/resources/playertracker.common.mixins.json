@@ -7,15 +7,16 @@
     "BundleContentsMixin",
     "CompassItemMixin",
     "EntityMixin",
-    "LivingEntityMixin",
     "ItemCostMixin",
     "ItemFrameMixin",
-    "PlayerMixin",
-    "ShulkerBoxSlotMixin",
-    "SlotMixin",
     "ItemMixin",
+    "LivingEntityMixin",
+    "PlayerMixin",
+    "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",
-    "ServerGamePacketListenerImplMixin"
+    "ShelfBlockMixin",
+    "ShulkerBoxSlotMixin",
+    "SlotMixin"
   ],
   "injectors": {
     "defaultRequire": 1
