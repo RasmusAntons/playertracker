@@ -32,14 +32,14 @@ public class PlayerTrackerClient implements ClientModInitializer {
                 Minecraft minecraft = Minecraft.getInstance();
                 var connection = minecraft.getConnection();
                 if (connection == null || connection.getOnlinePlayers().size() <= 1) {
-                    minecraft.gui.setOverlayMessage(
+                    minecraft.gui.hud.setOverlayMessage(
                             Utils.addFallback(Component.translatable("playertracker.action.no_player"))
                                     .withStyle(ChatFormatting.GOLD),
                             false
                     );
                     return;
                 }
-                client.setScreen(new PlayerTrackerGUI(
+                client.gui.setScreen(new PlayerTrackerGUI(
                         (PlayerInfo selectedPlayer) ->
                                 ClientPlayNetworking.send(new TrackPlayerPacket(selectedPlayer.getProfile()))
                 ));
