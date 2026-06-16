@@ -29,7 +29,7 @@ import static net.minecraft.core.component.DataComponents.LODESTONE_TRACKER;
 public class CompassItemMixin {
     @Inject(method = "inventoryTick", at = @At("HEAD"))
     private void onInventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, EquipmentSlot slot, CallbackInfo ci) {
-        if (owner instanceof ServerPlayer serverPlayer) {
+        if (slot != null && owner instanceof ServerPlayer serverPlayer) {
             if (!Utils.isPlayerTracker(itemStack))
                 return;
             GlobalPos targetPos = null;
